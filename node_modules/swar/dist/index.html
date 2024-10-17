@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title data-var="properties">{{ $item.name }} a tiny JS reactive library</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%22.9em%22%20font-size=%2290%22%3E🚲%3C/text%3E%3C/svg%3E"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.pragmore.com/2.0.0/balloon/blouse.css?font=Inconsolata&family=monospace&size=16pt"
+      crossorigin="anonymous"
+    />
+    <meta data-var="properties" data-value='{"name":"swar","title":"Write less with <em>swar</em>","description":"A tiny JavaScript reactive library","features":["Simple: add the script,the data-* attributes and set the variables","Light, minimal footprint","Use modern JavaScript and HMTL features"]}' />
+  </head>
+  <body>
+    <nav>
+      <input type="checkbox" id="menu-toggle" aria-hidden="true" />
+      <a href="#" data-var="properties">🚲 {{ $item.name }}</a>
+      <label for="menu-toggle" aria-hidden="true"></label>
+      <ul>
+        <li><a href="#model-binding">Model binding</a></li>
+        <li><a href="#conditional-rendering">Conditional rendering</a></li>
+        <li><a href="#clock">Clock</a></li>
+        <li><a href="#todo-list">TODO list</a></li>
+        <li><a href="#posts">Posts</a></li>
+      </ul>
+    </nav>
+    <main>
+      <section id="template">
+        <div data-var="properties">
+          <h1 class="text-center">{{ $item.title }}</h1>
+          <p class="text-center">{{ $item.description }}</p>
+        </div>
+
+        <p class="text-center text-lg">
+          <a
+            class="btn main"
+            href="#"
+            data-onclick="alert('Sorry, this is a work in progress, read this source code for how to use it')"
+            >Documentation</a
+          >
+          <a
+            class="btn alt"
+            href="https://github.com/pragmore/swar/archive/refs/heads/main.zip"
+            >Download</a
+          >
+        </p>
+
+        <h2>Features</h2>
+        <ul>
+          <li data-for="features">✅ {{ $item }}</li>
+        </ul>
+        <p class="msg warn">
+          <strong>This library is not production ready!</strong>
+        </p>
+      </section>
+
+      <h2 class="mt-2" id="model-binding">Model binding</h2>
+      <section>
+        <p><label for="name">Write your name:</label></p>
+        <p><input data-model="name" name="name" /></p>
+        <p data-var="name">Your name is <em>{{ $item }}</em>.</p>
+      </section>
+
+      <h2 class="mt-2" id="conditional-rendering">Conditional rendering</h2>
+      <section>
+        <p>
+          <label>
+            <input type="checkbox" data-model="show" />
+            Show text?
+          </label>
+        </p>
+        <p data-if="show"><strong>Show text is activated!</strong></p>
+        <p data-if="!show">Show text is disabled.</p>
+      </section>
+
+      <h2 class="mt-2" id="clock">Clock</h2>
+      <section>
+        <p data-var="time">Time now is <strong>{{ $item }}</strong> hs</p>
+      </section>
+
+      <section id="todo-list">
+        <h2 class="mt-2">TODO list</h2>
+        <meta
+          data-var="todo"
+          data-value='["First task", "Second and final task"]'
+        >
+        <form
+          data-onsubmit="if ($task()) { $todo.push($task()); $task('') }"
+        >
+          <p>
+            <input
+              data-model="task"
+              id="title"
+              placeholder="New task"
+              aria-label="New task"
+            />
+          </p>
+          <p><button class="main">Create</button></p>
+        </form>
+        <ul>
+          <li data-for="todo">
+            {{ $item }}
+            <a
+              href="#"
+              title="Remove from list {{ $item }}"
+              class="btn alt"
+              data-onclick="$todo.splice($index, 1)"
+              >❌</a
+            >
+          </li>
+        </ul>
+      </section>
+
+      <section id="posts">
+        <h2 class="mt-2">Posts</h2>
+        <h3>Get posts by fetching an API REST</h3>
+        <p data-if="!posts">Loading table...</p>
+        <table data-if="posts && posts.length > 0">
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Completed</th>
+          </tr>
+          <tr data-for="posts">
+            <td>
+              <strong>{{ $item.id }}</strong>
+              ({{ $index % 2 ? 'even' : 'odd' }})
+            </td>
+            <td>{{ $item.title }}</td>
+            <td>{{ $item.body }}</td>
+          </tr>
+        </table>
+      </section>
+    </main>
+    <footer>
+      <span>Made with ❤️ by <a href="https://pragmore.com">Pragmore</a></span>
+      <span>
+        <a
+          href="https://github.com/pragmore/swar/blob/main/LICENSE"
+          target="_blank"
+          >MIT Licence</a
+        >
+      </span>
+      <span>
+        <a
+          href="https://github.com/pragmore/swar"
+          target="_blank"
+          aria-label="GitHub"
+        >
+          <i class="gh" aria-hidden="true" title="GitHub"></i>
+        </a>
+      </span>
+    </footer>
+    <script src="swar.js"></script>
+    <script id="code-template">
+      $features($properties().features);
+    </script>
+    <script id="code-clock">
+      const updateTime = () => {
+        const zero = (digit) => (digit < 10 ? "0" + digit : digit);
+        const date = new Date();
+        $time(
+          date.getHours() +
+            ":" +
+            zero(date.getMinutes()) +
+            ":" +
+            zero(date.getSeconds())
+        );
+      };
+      updateTime();
+      setInterval(updateTime, 1000);
+    </script>
+    <script id="code-posts">
+      $posts
+        .fetch("https://jsonplaceholder.typicode.com/posts/?userId=1")
+        .then(console.log);
+    </script>
+  </body>
+</html>
