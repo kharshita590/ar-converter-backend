@@ -5,6 +5,7 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const mongodb = require("mongodb");
+require('dotenv').config()
 const app = express();
 
 app.options("*", (req, res) => {
@@ -24,8 +25,8 @@ app.use((req, res, next) => {
 app.use(cors());
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-
-mongoose.connect("mongodb://localhost:27017/", {
+const connectionString = process.env.MONGODB_URL
+mongoose.connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
